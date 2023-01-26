@@ -1,10 +1,6 @@
 package mate.academy.spring.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -15,8 +11,15 @@ public class User {
     private Long id;
     private String name;
     private Integer age;
-
+    @ManyToOne
+    private Category category;
     public User() {
+    }
+
+    public User(String name, Integer age, Category category) {
+        this.name = name;
+        this.age = age;
+        this.category = category;
     }
 
     public User(String name, Integer age) {
@@ -46,6 +49,14 @@ public class User {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override

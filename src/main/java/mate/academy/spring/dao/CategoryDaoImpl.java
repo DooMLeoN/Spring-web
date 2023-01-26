@@ -1,5 +1,6 @@
 package mate.academy.spring.dao;
 
+import mate.academy.spring.model.Category;
 import mate.academy.spring.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,59 +8,44 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserDaoImpl implements UserDao {
+public class CategoryDaoImpl implements CategoryDao {
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public UserDaoImpl(SessionFactory sessionFactory) {
+    public CategoryDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-
     @Override
-    public User add(User user) {
+    public Category create(Category category) {
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.save(user);
+            session.save(category);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't save user to DB: " + user);
+            throw new RuntimeException("Can't save category to DB: " + category);
         } finally {
             if (session != null) {
                 session.close();
             }
         }
-        return user;
-    }
+        return category;    }
 
     @Override
-    public Optional<User> getUserById(Long id) {
+    public Optional<Category> get(Long id) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("SELECT p FROM User p WHERE p.id =: id",
-                    User.class).setParameter("id",id).uniqueResultOptional();
+                    Category.class).setParameter("id", id).uniqueResultOptional();
         } catch (Exception e) {
             throw new RuntimeException("Can't get all users from DB!");
         }
     }
-
-    @Override
-    public List<User> getAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("SELECT p FROM User p ",
-                    User.class).getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException("Can't get all users from DB!");
-        }
-    }
-
-
 }
